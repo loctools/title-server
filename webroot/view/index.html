@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Title</title>
+        <link rel="stylesheet" type="text/css" href="../common/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="css/view.css" />
+        <link rel="icon" href="../common/img/favicon.png" />
+    </head>
+    <body>
+        <div id="header"><span id="logo"></span><span id="breadcrumbs">&nbsp;</span></div>
+        <div id="videoContainer">
+            <video id="video"></video>
+        </div>
+        <div id="controls">
+            <span id="timeStamp">--:--.---</span>
+            <button id="playPause">&nbsp;</button>
+            <span id="videoLength">--:--.---</span>
+        </div>
+        <div id="scrollableListContainer">
+            <div id="scrollableList">
+                <div id="scrollableListHeader">Start of track</div>
+                <div id="scrollableListItems"></div>
+                <div id="scrollableListFooter">End of track</div>
+                <div id="videoPositionLine"></div>
+            </div>
+            <div id="scrollableListShadow"></div>
+        </div>
+    </body>
+    <script src="../common/js/main.js"></script>
+    <script src="js/view.js"></script>
+</html>

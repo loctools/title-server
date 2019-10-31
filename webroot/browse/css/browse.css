@@ -1,0 +1,38 @@
+body {
+    display: grid;
+    grid-template-rows: auto minmax(auto, 100%);
+}
+
+#header {
+    border-bottom: 1px solid #333;
+}
+
+#scrollableListItems > div {
+    border-bottom: 1px dashed #333;
+}
+
+#scrollableListItems a {
+    display: block;
+    padding: 20px 20px 20px 58px;
+    font-size: 18.2px;
+    color: #fff;
+    text-decoration: none;
+    cursor: default;
+}
+
+a.folder,
+a.file {
+    background-image: url(../img/folder.svg);
+    background-repeat: no-repeat;
+    background-size: 26px;
+    background-position-x: 24px;
+    background-position-y: center;
+}
+
+a.folder {
+    background-image: url(../img/folder.svg);
+}
+
+a.file {
+    background-image: url(../img/file.svg);
+}
