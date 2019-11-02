@@ -14,6 +14,7 @@ import (
 type Config struct {
 	ListenAddress   string            `json:"listenAddress"`
 	DataRoot        string            `json:"dataRoot"`
+	RootURL         string            `json:"rootUrl"`
 	Secret          string            `json:"secret"`
 	LanguageAliases map[string]string `json:"languageAliases"`
 	LanguageNames   map[string]string `json:"languageNames"`
@@ -24,6 +25,7 @@ type Config struct {
 var CFG = &Config{
 	ListenAddress: ":8080",
 	DataRoot:      "./data",
+	RootURL:       "/",
 }
 
 func applyConfigFile(filename string) error {

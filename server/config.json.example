@@ -1,5 +1,6 @@
 {
     "listenAddress": ":8080",
-    "dataRoot": "/path/to/title/data",
+    "dataRoot": "./data",
+    "rootUrl": "/",
     "secret": "my-secret-string"
 }

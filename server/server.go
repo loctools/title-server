@@ -25,6 +25,7 @@ func main() {
 
 	log.Printf("Listening on %s\n", config.CFG.ListenAddress)
 	log.Printf("Root folder: %s\n", config.CFG.DataRoot)
+	log.Printf("Root URL: %s\n", config.CFG.RootURL)
 	log.Fatal(http.ListenAndServe(config.CFG.ListenAddress, nil))
 }
 

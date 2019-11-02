@@ -12,6 +12,7 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/loctools/title-server/config"
 	"github.com/loctools/title-server/title"
 	"github.com/loctools/title-server/validator"
 )
@@ -86,7 +87,8 @@ func GetData(root string, relPath string, secret string) ([]byte, error) {
 				signature := fmt.Sprintf("%x", h.Sum(nil))
 
 				response.RenewURL = fmt.Sprintf(
-					"/xhr/streaminfo/%s/%s/%s",
+					"%sxhr/streaminfo/%s/%s/%s",
+					config.CFG.RootURL,
 					response.Platform,
 					response.VideoID,
 					signature,
@@ -103,7 +105,8 @@ func GetData(root string, relPath string, secret string) ([]byte, error) {
 			relParentDir := path.Dir(relPath)
 
 			response.MetadataURL = fmt.Sprintf(
-				"/raw%s/%s/%s/meta",
+				"%sraw%s/%s/%s/meta",
+				config.CFG.RootURL,
 				relParentDir,
 				e.SubDir,
 				metaLang,
@@ -112,7 +115,8 @@ func GetData(root string, relPath string, secret string) ([]byte, error) {
 			// render the LocJSON download URL
 
 			response.LocJSONURL = fmt.Sprintf(
-				"/raw%s/%s/%s/locjson",
+				"%sraw%s/%s/%s/locjson",
+				config.CFG.RootURL,
 				relParentDir,
 				e.SubDir,
 				lang,
