@@ -448,6 +448,9 @@ function parseHighlightInfo(maxCues) {
         var parts = range.split('-');
         var start = parts[0];
         var end = parts.length == 1 ? parts[0] : parts[1];
+        start *= 1; // convert to number
+        end *= 1; // convert to number
+
         if (start < 1 || start > end || start > maxCues || end > maxCues) {
             return;
         }
