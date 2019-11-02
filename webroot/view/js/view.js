@@ -740,11 +740,23 @@ function onCueMouseClick(e) {
         return;
     }
 
+    console.log('onCueMouseClick(): resetting loop start/end positions');
     loopStart = -1;
     loopEnd = -1;
-    console.log('onCueMouseClick(): resetting loop start/end positions');
-    console.log('cue.startTime:', cue.startTime);
-    video.currentTime = cue.startTime + 0.001;
+
+    var targetTime = cue.startTime + 0.001;
+
+    delta = Math.abs(targetTime - video.currentTime);
+    if (video.paused && delta < 0.001) {
+        play();
+        return;
+    }
+
+    video.currentTime = targetTime;
+
+    if (!video.paused) {
+        pause();
+    }
 }
 
 function parseTime(t) {

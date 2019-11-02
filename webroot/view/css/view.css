@@ -68,8 +68,11 @@ body.emptyvideo #video {
 #playPause {
     width: 32px;
     height: 32px;
+    box-sizing: border-box;
     border-radius: 16px;
-    font-size: 18px;
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: clip;
     border: none;
     background-color: transparent;
     background-image: url(../img/play.svg);
