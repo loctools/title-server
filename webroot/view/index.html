@@ -5,11 +5,15 @@
         <link rel="stylesheet" type="text/css" href="../common/css/main.css" />
         <link rel="stylesheet" type="text/css" href="css/view.css" />
         <link rel="icon" href="../common/img/favicon.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="viewport" content="user-scalable=no,width=640" />
+        <meta name="format-detection" content="telephone=no" />
     </head>
     <body>
         <div id="header"><span id="logo"></span><span id="breadcrumbs">&nbsp;</span></div>
         <div id="videoContainer">
-            <video id="video"></video>
+            <video id="video" playsinline="playsinline"></video>
         </div>
         <div id="controls">
             <span id="timeStamp">--:--.---</span>
