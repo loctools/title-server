@@ -26,7 +26,7 @@ var videoPlaybackMonitorTimer;
 // add extra small value to make sure we go to the actual cue
 // we clicked on, and not to the upper one, when upper one
 // ends at the same time as the next one begins.
-const TINY_TIME_OFFSET = 0.00001;
+const TINY_TIME_OFFSET = 0.0001;
 
 document.addEventListener('DOMContentLoaded', onDocumentLoad);
 document.addEventListener('keydown', onDocumentKeydown);
@@ -758,10 +758,10 @@ function onCueMouseClick(e) {
     loopStart = -1;
     loopEnd = -1;
 
-    var targetTime = cue.startTime + 0.001;
+    var targetTime = cue.startTime + TINY_TIME_OFFSET;
 
     delta = Math.abs(targetTime - video.currentTime);
-    if (video.paused && delta < 0.001) {
+    if (video.paused && delta < TINY_TIME_OFFSET) {
         play();
         return;
     }
