@@ -1,6 +1,7 @@
 var hashPath;
 var hashQuery;
 
+var autoplayRequested = false;
 var videoLoaded = false;
 var wasInitialized = false;
 
@@ -42,6 +43,8 @@ function onDocumentLoad() {
         hashPath = parts.shift();
         hashQuery = parseQueryParams(parts.join('?'));
         console.log('hashQuery:', hashQuery);
+
+        autoplayRequested = hashQuery['play'];
 
         loadUrl('../xhr/view' + hashPath, processViewDataXHRResponse);
         renderBreadcrumbs(hashPath);
@@ -707,6 +710,14 @@ function textTrackCueChange() {
     console.log('textTrackCueChange()', 'idx:', idx, 'video.currentTime:', video.currentTime);
 
     selectCueByIndex(idx);
+
+    if (autoplayRequested) {
+        if (video.paused) {
+            setLoop(true);
+            play();
+        }
+        autoplayRequested = false;
+    }
 }
 
 function onCueMouseClick(e) {
@@ -809,6 +820,27 @@ function onDocumentKeydown(e) {
     }
 }
 
+function setLoop(extendForSelection) {
+    var textTrack = video.textTracks[0];
+    if (currentCueIndex === -1) {
+        currentCueIndex = 0;
+    }
+    var cue = textTrack.cues[currentCueIndex];
+    loopStart = cue.startTime;
+    loopEnd = cue.endTime;
+    console.log('loopEnd:', loopEnd);
+
+    if (extendForSelection) {
+        for (var i = currentCueIndex; i < textTrack.cues.length; i++) {
+            if (!highlightedCues[i]) {
+                break;
+            }
+            loopEnd = textTrack.cues[i].endTime;
+            console.log('extending loopEnd to', loopEnd);
+        }
+    }
+}
+
 function processKeydownEvent(e) {
     console.warn(e);
 
@@ -873,25 +905,7 @@ function processKeydownEvent(e) {
     }
 
     if (e.code === 'Enter') {
-        if (currentCueIndex === -1) {
-            currentCueIndex = 0;
-            cue = textTrack.cues[currentCueIndex];
-        }
-        loopStart = cue.startTime;
-        loopEnd = cue.endTime;
-        console.log('loopEnd:', loopEnd);
-        // unless Shift+Enter is pressed,
-        // extend the loop end to the last
-        // highlighted in the series
-        if (!e.shiftKey) {
-            for (var i = currentCueIndex; i < textTrack.cues.length; i++) {
-                if (!highlightedCues[i]) {
-                    break;
-                }
-                loopEnd = textTrack.cues[i].endTime;
-                console.log('extending loopEnd to', loopEnd);
-            }
-        }
+        setLoop(!e.shiftKey);
         gotoCue(currentCueIndex);
         play();
         return true;
