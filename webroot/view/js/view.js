@@ -1,5 +1,8 @@
 var hashPath;
 var hashQuery;
+var rawHashQuery;
+var prevHashPath;
+var prevRawHashQuery;
 
 var autoplayRequested = false;
 var videoLoaded = false;
@@ -31,6 +34,7 @@ const TINY_TIME_OFFSET = 0.0001;
 document.addEventListener('DOMContentLoaded', onDocumentLoad);
 document.addEventListener('keydown', onDocumentKeydown);
 document.addEventListener('mousemove', onDocumentMouseMove);
+window.onhashchange = onWindowHashChange;
 
 function onDocumentLoad() {
     console.log('onDocumentLoad()');
@@ -38,18 +42,69 @@ function onDocumentLoad() {
     if (window.location.hash === '') {
         console.warn('Path not provided');
     } else {
-        hashPath = window.location.hash.substr(1);
-        var parts = hashPath.split('?');
-        hashPath = parts.shift();
-        hashQuery = parseQueryParams(parts.join('?'));
-        console.log('hashQuery:', hashQuery);
-
-        autoplayRequested = hashQuery['play'];
-
-        loadUrl('../xhr/view' + hashPath, processViewDataXHRResponse);
-        renderBreadcrumbs(hashPath);
-        document.title = hashPath + ' — Title';
+        onWindowHashChange();
     }
+}
+
+function onWindowHashChange() {
+    parseHashQuery();
+
+    if (prevHashPath === hashPath && prevRawHashQuery === rawHashQuery) {
+        return;
+    }
+    console.log('onWindowHashChange()', window.location.hash);
+
+    if (prevHashPath !== hashPath) {
+        prevHashPath = hashPath;
+        renderView();
+        return;
+    }
+
+    prevRawHashQuery = rawHashQuery;
+    renderState();
+}
+
+function renderView() {
+    console.log('renderView()');
+
+    videoLoaded = false;
+    parsedLocjsonFile = undefined;
+    parsedMetadataFile = undefined;
+    wasInitialized = false;
+    currentCueIndex = -1;
+    lastSelectedCueIndex = -1;
+    loopStart = -1;
+    loopEnd = -1;
+
+    autoplayRequested = hashQuery['play'];
+    loadUrl('../xhr/view' + hashPath, processViewDataXHRResponse);
+    renderBreadcrumbs(hashPath);
+    document.title = hashPath + ' — Title';
+}
+
+function renderState() {
+    console.log('renderState()');
+    var textTrack = video.textTracks[0];
+    parseHighlightInfo(textTrack.cues.length);
+
+    for (var i = 0; i < textTrack.cues.length; i++) {
+        var cue = textTrack.cues[i];
+
+        cue.__outerDiv.classList.toggle('highlighted', !!highlightedCues[i]);
+    }
+
+    autoplayRequested = hashQuery['play'];
+    initializeVideoPosition();
+}
+
+function parseHashQuery() {
+    hashPath = window.location.hash.substr(1);
+    var parts = hashPath.split('?');
+    hashPath = parts.shift();
+    rawHashQuery = parts.join('?');
+    hashQuery = parseQueryParams(rawHashQuery);
+    console.log('hashPath:', hashPath);
+    console.log('hashQuery:', hashQuery);
 }
 
 function updateHighlightInfoInUrl() {
@@ -97,8 +152,11 @@ function updateHighlightInfoInUrl() {
 }
 
 function updateHash() {
+    prevHashPath = hashPath;
     var q = buildQueryParams(hashQuery);
-    window.location.hash = q === '' ? hashPath : hashPath + '?' + q;
+    prevRawHashQuery = q;
+
+    window.location.hash = '#' + (q === '' ? hashPath : hashPath + '?' + q);
 }
 
 function renderBreadcrumbs(path) {
@@ -517,6 +575,21 @@ function updateSpeedLabel(cue, div) {
     div.innerText = Math.round(speed) + 'cps';
 }
 
+function prepareTextTrack() {
+    if (video.textTracks.length === 0) {
+        var textTrack = video.addTextTrack('subtitles');
+        textTrack.addEventListener('cuechange', textTrackCueChange);
+        return textTrack;
+    }
+
+    var textTrack = video.textTracks[0];
+    while (textTrack.cues.length > 0) {
+        textTrack.removeCue(textTrack.cues[0]);
+    }
+
+    return textTrack;
+}
+
 function buildCues() {
     console.log('buildCues()');
 
@@ -531,7 +604,7 @@ function buildCues() {
         return;
     }
 
-    var track = video.addTextTrack('subtitles');
+    var track = prepareTextTrack();
 
     for (var i = 0; i < parsedMetadataFile.length; i++) {
         var meta = parsedMetadataFile[i];
@@ -546,7 +619,6 @@ function initCues() {
     console.log('initCues()');
     wasInitialized = true;
     var textTrack = video.textTracks[0];
-    textTrack.addEventListener('cuechange', textTrackCueChange);
 
     // now that we know the total length of the cues list,
     // parse the highlighting info
