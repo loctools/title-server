@@ -40,6 +40,12 @@ a {
     position: relative;
 }
 
+@media (min-width: 640px) and (max-width: 640px) {
+    #header {
+        padding: 10px;
+    }
+}
+
 #logo {
     width: 32px;
     height: 26px;
