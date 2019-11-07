@@ -55,12 +55,12 @@ func GatherLanguageFiles(projectDir string) ([]*Entry, error) {
 			if val, ok := config.CFG.LanguageNames[lang]; ok {
 				langName = val
 			} else {
-				if val, ok := config.CFG.LanguageAliases[lang]; ok {
-					lang = val
-				}
-				lang := language.Make(lang)
 				p := message.NewPrinter(language.English)
-				langName = p.Sprintf("%v", display.Language(lang))
+				canonicLang, ok := config.CFG.LanguageAliases[lang]
+				if !ok {
+					canonicLang = lang
+				}
+				langName = p.Sprintf("%v", display.Language(language.Make(canonicLang)))
 			}
 
 			entries = append(entries, &Entry{
