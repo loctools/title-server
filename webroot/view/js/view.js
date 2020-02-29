@@ -60,6 +60,10 @@ function onWindowHashChange() {
         return;
     }
 
+    loopStart = -1;
+    loopEnd = -1;
+    pause();
+
     prevRawHashQuery = rawHashQuery;
     renderState();
 }
