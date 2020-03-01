@@ -60,8 +60,7 @@ function onWindowHashChange() {
         return;
     }
 
-    loopStart = -1;
-    loopEnd = -1;
+    clearLoop();
     pause();
 
     prevRawHashQuery = rawHashQuery;
@@ -486,8 +485,7 @@ function videoPlaybackMonitor() {
     if (loopEnd > -1 && t >= loopEnd) {
         pause();
         video.currentTime = loopStart + TINY_TIME_OFFSET;
-        console.log('video position monitor: resetting loop start/end positions');
-        loopStart = loopEnd = -1;
+        clearLoop();
     }
 }
 
@@ -830,9 +828,7 @@ function onCueMouseClick(e) {
         return;
     }
 
-    console.log('onCueMouseClick(): resetting loop start/end positions');
-    loopStart = -1;
-    loopEnd = -1;
+    clearLoop();
 
     var targetTime = cue.startTime + TINY_TIME_OFFSET;
 
@@ -897,6 +893,7 @@ function onDocumentKeydown(e) {
 }
 
 function setLoop(extendForSelection) {
+    console.log('setLoop(' + extendForSelection + ')');
     var textTrack = video.textTracks[0];
     if (currentCueIndex === -1) {
         currentCueIndex = 0;
@@ -917,19 +914,19 @@ function setLoop(extendForSelection) {
     }
 }
 
+function clearLoop() {
+    console.log('clearLoop()');
+    loopStart = loopEnd = -1;
+}
+
 function processKeydownEvent(e) {
-    console.warn(e);
-
-    loopStart = -1;
-    loopEnd = -1;
-    console.log('processKeydownEvent(): resetting loop start/end positions');
-
-    disableMouseHover();
-
     var textTrack = video.textTracks[0];
     var cue = currentCueIndex > -1 ? textTrack.cues[currentCueIndex] : undefined;
 
+    disableMouseHover();
+
     if (e.code === 'ArrowLeft') {
+        clearLoop();
         if (e.altKey) {
             video.currentTime -= 0.1;
             return true;
@@ -942,6 +939,7 @@ function processKeydownEvent(e) {
         return true;
     }
     if (e.code === 'ArrowRight') {
+        clearLoop();
         if (e.altKey) {
             video.currentTime += 0.1;
             return true;
@@ -954,6 +952,7 @@ function processKeydownEvent(e) {
         return true;
     }
     if (e.code === 'ArrowUp') {
+        clearLoop();
         if (cue && video.currentTime - TINY_TIME_OFFSET > cue.startTime + 0.5) {
             gotoCue(currentCueIndex);
             return true;
@@ -964,6 +963,7 @@ function processKeydownEvent(e) {
         return true;
     }
     if (e.code === 'ArrowDown') {
+        clearLoop();
         if (lastSelectedCueIndex < textTrack.cues.length - 1) {
             gotoCue(lastSelectedCueIndex + 1);
         }
@@ -974,6 +974,7 @@ function processKeydownEvent(e) {
         return true;
     }
     if (e.code === 'Escape') {
+        clearLoop();
         if (!video.paused) {
             pause();
         }
