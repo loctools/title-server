@@ -5,6 +5,7 @@ type Config struct {
 	//LocJSONFileComments []string `json:"locjsonFileComments"`
 	Platform string `json:"platform"`
 	VideoID  string `json:"videoId"`
+	MediaURL string `json:"mediaUrl"`
 }
 
 // ProjectFolderName defines the name

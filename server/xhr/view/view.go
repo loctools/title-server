@@ -23,7 +23,8 @@ type Response struct {
 	VideoID     string `json:"videoId"`
 	LocJSONURL  string `json:"locjsonUrl"`
 	MetadataURL string `json:"metadataUrl"`
-	RenewURL    string `json:"renewUrl"`
+	RenewURL    string `json:"renewUrl,omitempty"`
+	MediaURL    string `json:"mediaUrl,omitempty"`
 }
 
 // GetData gathers information about for a given file:
@@ -77,22 +78,25 @@ func GetData(root string, relPath string, secret string) ([]byte, error) {
 			if titleCfg.Platform != "" && titleCfg.VideoID != "" {
 				response.Platform = titleCfg.Platform
 				response.VideoID = titleCfg.VideoID
+				response.MediaURL = titleCfg.MediaURL
 
-				// create a signed stream renewal URL
+				// if media URL is not static,
+				// create a signed renewal URL
+				if response.MediaURL == "" {
+					h := sha1.New()
+					io.WriteString(h, response.Platform)
+					io.WriteString(h, response.VideoID)
+					io.WriteString(h, secret)
+					signature := fmt.Sprintf("%x", h.Sum(nil))
 
-				h := sha1.New()
-				io.WriteString(h, response.Platform)
-				io.WriteString(h, response.VideoID)
-				io.WriteString(h, secret)
-				signature := fmt.Sprintf("%x", h.Sum(nil))
-
-				response.RenewURL = fmt.Sprintf(
-					"%sxhr/streaminfo/%s/%s/%s",
-					config.CFG.RootURL,
-					response.Platform,
-					response.VideoID,
-					signature,
-				)
+					response.RenewURL = fmt.Sprintf(
+						"%sxhr/streaminfo/%s/%s/%s",
+						config.CFG.RootURL,
+						response.Platform,
+						response.VideoID,
+						signature,
+					)
+				}
 			}
 
 			// determine the metadata file name and render its download URL

@@ -211,6 +211,12 @@ function processViewDataXHRResponse() {
     loadUrl(videoInfo.metadataUrl, processMetadataXHRResponse);
     loadUrl(videoInfo.locjsonUrl, processLocJSONXHRResponse);
 
+    if (!!videoInfo.mediaUrl) {
+        console.log('Setting an explicitly specified media URL');
+        setVideoUrl(videoInfo.mediaUrl);
+        return;
+    }
+
     if (!videoInfo.renewUrl) {
         console.log('Setting an empty video');
         isEmptyVideo = true;
