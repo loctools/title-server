@@ -83,6 +83,10 @@ func getStreamInfoFromYoutubeEntry(entry youtubeFormatsEntry) (*StreamInfo, erro
 	streamInfo.Width = entry.Width
 	streamInfo.Height = entry.Height
 
+	if streamInfo.URL == "" {
+		return streamInfo, nil
+	}
+
 	matches := reExtractYoutubeTimestamp.FindStringSubmatch(entry.URL)
 	if len(matches) == 0 {
 		return nil, errors.New("Can't extract the expiration timestamp from the URL")
