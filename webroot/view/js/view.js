@@ -174,7 +174,7 @@ function renderBreadcrumbs(path) {
     var parts = path.split('/');
     var lastItem = parts.splice(-1, 1);
     var relPath = '/';
-    parts.forEach(el => {
+    parts.forEach((el) => {
         if (el === '') {
             return;
         }
@@ -301,7 +301,7 @@ function loadVideo(platform, videoId, renewUrl) {
     console.log('Fetching', renewUrl);
 
     var xhr = new XMLHttpRequest();
-    xhr.addEventListener('load', function() {
+    xhr.addEventListener('load', function () {
         var data = this.responseText;
 
         if (data === '') {
@@ -386,7 +386,7 @@ function updateUI() {
     updateVideoPositionLine();
 }
 
-video.addEventListener('loadeddata', function() {
+video.addEventListener('loadeddata', function () {
     console.log('video.loadeddata');
     videoLoaded = true;
     requestUIUpdate();
@@ -420,7 +420,7 @@ video.addEventListener('timeupdate', videoPlaybackMonitor, true);
 
 video.addEventListener(
     'pause',
-    function(e) {
+    function (e) {
         document.body.classList.remove('isPlaying');
     },
     true
@@ -428,7 +428,7 @@ video.addEventListener(
 
 video.addEventListener(
     'play',
-    function(e) {
+    function (e) {
         document.body.classList.add('isPlaying');
     },
     true
@@ -447,10 +447,10 @@ function play() {
 
     if (promise !== undefined) {
         promise
-            .then(_ => {
+            .then((_) => {
                 console.log('Playback started');
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log('Playback failed');
                 console.error(error);
             });
@@ -513,7 +513,7 @@ function parseHighlightInfo(maxCues) {
         return;
     }
 
-    hashQuery['hl'].split(';').forEach(range => {
+    hashQuery['hl'].split(';').forEach((range) => {
         var parts = range.split('-');
         var start = parts[0];
         var end = parts.length == 1 ? parts[0] : parts[1];
@@ -710,7 +710,7 @@ function buildTimeline() {
             from: 0,
             till: cuesStart,
             fromDiv: null,
-            tillDiv: firstCue.__outerDiv
+            tillDiv: firstCue.__outerDiv,
         };
     }
 
@@ -721,7 +721,7 @@ function buildTimeline() {
             from: cue.startTime,
             till: nextCue.startTime,
             fromDiv: cue.__outerDiv,
-            tillDiv: nextCue.__outerDiv
+            tillDiv: nextCue.__outerDiv,
         };
         // add reference from the cue to the timeline index
         // for easier seeking
@@ -732,7 +732,7 @@ function buildTimeline() {
         from: lastCue.startTime,
         till: lastCue.endTime,
         fromDiv: lastCue.__outerDiv,
-        tillDiv: scrollableListFooter
+        tillDiv: scrollableListFooter,
     };
     lastCue.__timelineIdx = timelineIdx;
 
@@ -741,7 +741,7 @@ function buildTimeline() {
             from: lastCue.endTime,
             till: adjustedVideoDuration,
             fromDiv: scrollableListFooter,
-            tillDiv: null
+            tillDiv: null,
         };
     }
 }
